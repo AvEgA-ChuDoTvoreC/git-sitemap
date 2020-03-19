@@ -99,7 +99,12 @@ class Sitemap:
         return s
 
     def start(self, session):
-        # payload = {'key1': 'value1', 'key2': 'value2'}
+        """
+        Start programm
+
+        :param session:
+        :return: req.text
+        """
         req = session.post('https://' + f'{args.domain}')
         time.sleep(2)
         # run_command(f'touch {oo}/TTTT.txt')
@@ -110,6 +115,7 @@ class Sitemap:
     def request(self, url, session):
         """
         Get request from site url or (args.domain)
+
         :param url:
         :param session:
         :return: req
@@ -122,24 +128,28 @@ class Sitemap:
         """
         Worker gonna do his job - make requests in thread!
 
-        :param qq: try to put extra worker
         :param thread_name:
         :param checked_links:
+        :param qq: try to put extra worker
         :return: self.checked_links_end
         """
         # thread name https://vistgroup.ru/company/
-        if qq != 10:
-            th = threading.Thread(target=self.crawling_web_pages, args=(0, 3, thread_name, checked_links))
-            th.start()
-        else:
+        if (qq + 1) == self.workers_count:
+            print('QQQQQQQ = worker count')
             thth = threading.Thread(target=self.crawling_1st_page_other_links,
                                     args=(0, 0, self.thread_links, self.checked_links))
             thth.start()
+        if (qq + 1) != self.workers_count:
+            print('QQ ========')
+            th = threading.Thread(target=self.crawling_web_pages, args=(0, 3, thread_name, checked_links))
+            th.start()
+
         return self.checked_links
 
     def worker_threading_domains(self, link, link_session):
         """
         ЗАГОТОВКА: СОЗДАНИЕ ПОТОКОВОЙ ОБРАБОТКИ НЕСКОЛЬКИХ ДОМЕНОВ ОДНОВРЕМЕННО
+
         :param link: he get link from        -checked_links
         :param link_session: use instrument  -session (with headers)
         :return:
@@ -161,9 +171,7 @@ class Sitemap:
     def thread_activator(self):
         """
         Run Threads depending on number of workers
-        :return:
         """
-
         # ОБРАБОТКА: ПОЛУЧАЕМ СПИСКИ SELF.CHECKED_LINKS, SELF.THREAD_LINKS УРОВНЯ 1
         self.start_crawling()
         print('1st try links = \n', self.checked_links)
@@ -183,15 +191,9 @@ class Sitemap:
         run_command(f'touch ' + f'{site_dir}/links_from_thread.txt', echo=False)
         run_command(f'touch ' + f'{site_dir}/extra_thread.txt', echo=False)
 
-        # extra_worker = multiprocessing.Process(target=self.crawling_1st_page_other_links,
-        #                                        args=(0, 3, self.thread_links, self.checked_links))
-        # extra_worker.start()
-        # extra_worker.join()
-
         workers_list = [multiprocessing.Process(target=self.worker,
                                                 args=(self.thread_links[i], [self.thread_links[i]], i))
                         for i in range(self.workers_count)]
-
         for w in workers_list:
             w.start()
         for w in workers_list:
@@ -219,7 +221,7 @@ class Sitemap:
     def start_crawling(self):
         """
         Crawling - активируем "ползать" по страничкам
-        :return: start func: crawling_web_pages()
+        :return: self.checked_links, self.thread_links
         """
         print('https://' + f'{args.domain}')
         print('Crawling...')
@@ -250,9 +252,7 @@ class Sitemap:
         """
         self.checked_links = checked_links
 
-        # control = 0
-        # count_try = 0
-        while control < len(self.checked_links):  # len = 1,    if conrol > len   -> ????creating_sitemap()????
+        while control < len(self.checked_links):
 
             try:
                 # ОБРАБОТКА: РАЗБИВАЕМ КАЖДЫЙ ЛИНК ЧЕРЕЗ .SPLIT('/') И ОТДЕЛЬНО ПРОВЕРИМ КАЖДУЮ ПАПКУ 1 УРОВНЯ
@@ -261,7 +261,6 @@ class Sitemap:
 
                 # ПЕРЕНОШУ ЭТУ ОБРАБОТКУ В ОТДЕЛЬНЫЙ ПОТОК КОТОРЫЙ БУДЕТ ИСКАТЬ МНЕ ДОПОЛНИТЕЛЬНЫЕ THREAD_LINKS
                 count_try += 1
-                # print(f'КОЛИЧЕСТВО TRY {count_try}')
                 if count_try == 2:
                     for link in self.checked_links:
                         k = link.split('/')[3]
@@ -313,7 +312,7 @@ class Sitemap:
                                 new_links[c] += '/'
                             c += 1
 
-                    # ОБРАБОТКА: ПОИСК ФАЙЛА ROBOTS.TXT И SITEMAP.XML ДЛЯ ДОБАВЛЕНИЯ ССЫЛОК,
+                    # ОБРАБОТКА: ПОИСК ФАЙЛА ROBOTS.TXT И SITEMAP.XML ДЛЯ ДОБАВЛЕНИЯ ССЫЛОК, В ПРОЦЕССЕ
 
                     # ОБРАБОТКА: НОВЫЕ ССЫЛКИ В СЛОВАРЬ -> NEW_LINKS
                     counter = 0
@@ -326,7 +325,6 @@ class Sitemap:
                             # getting first character of every link & if it starts with slash / then
                             # we remove this / slash because we have already added the slash at the end of the domain
                             if verify == '/':
-
                                 new_links[counter] = new_links[counter][:1].replace('/', '') + new_links[counter][1:]
                                 # this will remove only first slash in the link  /string  not every slash
 
@@ -340,7 +338,6 @@ class Sitemap:
                                 else:
                                     counter = counter + 1
                                     self.extra_links.append(new_links[counter])
-
                             else:
                                 # this code is for thouse relative links witch doesn't starts with / slash
                                 new_links[counter] = self.site_link + new_links[counter]
@@ -350,9 +347,8 @@ class Sitemap:
                     else:
                         counter2 = 0
                         while counter2 < len(new_links):
-
                             # here we can apply any filter so if the contain any of these strings then
-                            # dont append this link into the final array where we are collecting /
+                            # don't append this link into the final array where we are collecting /
                             # appending all the links found in that website
                             if "#" not in new_links[counter2] and "mailto" not in new_links[counter2] and \
                                     ".jpg" not in new_links[counter2] and new_links[counter2] not in self.checked_links \
@@ -371,7 +367,6 @@ class Sitemap:
                                 print(str(control) + ' Web Pages Crawler & ' + str(
                                     len(self.checked_links)) + " Web Pages Found")
                                 print('')
-                                # print(f'{os.getpid()}')
                                 print(new_links[counter2])  # display the current site_link
                                 counter2 = counter2 + 1
                             else:
@@ -392,7 +387,6 @@ class Sitemap:
                 continue
             else:
                 control = control + 1
-
         else:
             time.sleep(0.1)
             text_links = ''
@@ -402,16 +396,14 @@ class Sitemap:
                     if line not in f:
                         run_command(f'echo "{text_links}" >> {oo}/Sitemaps/{args.domain}/links_from_thread.txt',
                                     echo=False)
-                        # self.checked_links_end.append(line)
             time.sleep(0.1)
 
-        # print('END links from THREAD =\n', self.checked_links)   # this links goes to self.check_links_end
-        # print('END LINKS =\n', self.checked_links_end)
         return self.checked_links, self.extra_links
 
     # ex: checked_links = [ 'https://vistgroup.ru/' ]
     def crawling_1st_page(self, control, count_try, thread_links, checked_links):
         """
+        We start with this crawling_1st_page() -> crawling_web_pages() + crawling_1st_page_other_links() as extra worker
         Web scraping is ON. Выскабливаем линки с сайта
         Check main page links then -> Check all found out links
         :return: list: checked_links [link1, link2, ...]
@@ -419,9 +411,7 @@ class Sitemap:
         self.thread_links = thread_links
         self.checked_links = checked_links
 
-        # control = 0
-        # count_try = 0
-        while control < len(self.checked_links):  # len = 1,    if conrol > len   -> ????creating_sitemap()????
+        while control < len(self.checked_links):
 
             try:
                 # ОБРАБОТКА: РАЗБИВАЕМ КАЖДЫЙ ЛИНК ЧЕРЕЗ .SPLIT('/') И ОТДЕЛЬНО ПРОВЕРИМ КАЖДУЮ ПАПКУ 1 УРОВНЯ
@@ -457,9 +447,6 @@ class Sitemap:
 
                     responses = self.request(self.checked_links[control], self.request_session())
                     source_code = responses.text
-                    print('========================')
-                    print('CUrrent response = ', self.checked_links[control])
-                    print('========================')
 
                     # ОБРАБОТКА: ПОИСК DATA_HREF И SRC
                     soup = BeautifulSoup(source_code, "html.parser")
@@ -567,6 +554,7 @@ class Sitemap:
         """
         self.thread_links = thread_links
         self.checked_links = checked_links
+        print('\nEXTRA WORKER START HIS JOB\n')
 
         while control < len(self.checked_links):
             try:
