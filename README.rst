@@ -17,9 +17,9 @@ Please open Terminal and run this commands to start.
 
     cd ~/
     
-    test_sitemap_end.py --help
+    sitemapBuilder.py --help
     
-    test_sitemap_end.py exampledomain.ru -d 10 -l10
+    sitemapBuilder.py exampledomain.ru -d 10 -l10
 
 Requirements
 ============
