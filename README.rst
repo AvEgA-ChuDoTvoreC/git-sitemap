@@ -35,3 +35,18 @@ Install
 The quick way::
 
     pip install sitemapBuilder.py  * This func not work yet :P
+
+Import external library dependencies
+====================================
+
+Get this modules be4 start::
+
+    pip3 install textwrap
+    pip3 install subprocess
+    pip3 install requests
+    pip3 install bs4 
+    pip3 install threading
+    pip3 install multiprocessing
+    pip3 install xml.etree.cElementTree
+    pip3 install pandas
+    pip3 install graphviz
