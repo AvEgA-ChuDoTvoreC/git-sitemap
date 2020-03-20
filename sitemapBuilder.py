@@ -282,7 +282,7 @@ class Sitemap:
                 # /vg-underground_C2_A0v2_C2_A0FR.png И ИГНОР ИХ В ДАЛЬНЕЙШЕМ А ТАКЖЕ:  /*.PDF
                 dot_in_the_endlink = 'None'
                 search_links = re.search(
-                    '/[-;:+%"!@^±§&<>#_=?.a-zA-Z0-9]{2,100}[.]{1,100}[-;:+%"!@^±§&<>#_=?.a-zA-Z0-9]{2,100}$',
+                    '/[-;:+%"!@^±§& <>#_=?.a-zA-Z0-9]{2,100}[.]{1,100}[-;:+%"!@^±§& <>#_=?.a-zA-Z0-9]{2,100}$',
                     self.checked_links[control])
                 if search_links is not None:
                     dot_in_the_endlink = search_links.group()
@@ -443,7 +443,7 @@ class Sitemap:
                 # /vg-underground_C2_A0v2_C2_A0FR.png И ИГНОР ИХ В ДАЛЬНЕЙШЕМ   /*.PDF
                 dot_in_the_endlink = 'None'
                 search_links = re.search(
-                    '/[-;:+%"!@^±§&<>#_=?.a-zA-Z0-9]{2,100}[.]{1,100}[-;:+%"!@^±§&<>#_=?.a-zA-Z0-9]{2,100}$',
+                    '/[-;:+%"!@^±§& <>#_=?.a-zA-Z0-9]{2,100}[.]{1,100}[-;:+%"!@^±§& <>#_=?.a-zA-Z0-9]{2,100}$',
                     self.checked_links[control])
                 if search_links is not None:
                     dot_in_the_endlink = search_links.group()
@@ -576,7 +576,7 @@ class Sitemap:
 
                 dot_in_the_endlink = 'None'
                 search_links = re.search(
-                    '/[-;:+%"!@^±§&<>#_=?.a-zA-Z0-9]{2,100}[.]{1,100}[-;:+%"!@^±§&<>#_=?.a-zA-Z0-9]{2,100}$',
+                    '/[-;:+%"!@^±§& <>#_=?.a-zA-Z0-9]{2,100}[.]{1,100}[-;:+%"!@^±§& <>#_=?.a-zA-Z0-9]{2,100}$',
                     self.checked_links[control])
                 if search_links is not None:
                     dot_in_the_endlink = search_links.group()
@@ -1122,7 +1122,7 @@ if __name__ == '__main__':
     oo = oo1[1].strip('\n')
 
     wrong = re.search(
-                    '/[-;:+%"!@^±§&<>#_=?.a-zA-Z0-9]{2,100}[.]{1,100}[-;:+%"!@^±§&<>#_=?.a-zA-Z0-9]{2,100}$',
+                    '/[-;:+%"!@^±§& <>#_=?.a-zA-Z0-9]{2,100}[.]{1,100}[-;:+%"!@^±§& <>#_=?.a-zA-Z0-9]{2,100}$',
                     args.domain)  # ignore dark net sites :P
     w2 = args.domain
     if '/' in w2 or ',' in w2 or 'http' in w2 or 'https' in w2 or wrong is not None:
