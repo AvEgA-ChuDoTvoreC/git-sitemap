@@ -339,8 +339,8 @@ class Sitemap:
                                     # joining thread name with relative links
                                     counter = counter + 1
                                 else:
-                                    counter = counter + 1
                                     self.extra_links.append(new_links[counter])
+                                    counter = counter + 1
                             else:
                                 # this code is for thouse relative links witch doesn't starts with / slash
                                 new_links[counter] = self.site_link + new_links[counter]
