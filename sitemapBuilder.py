@@ -41,7 +41,6 @@ User_Agent = 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; WOW64; Trident/
 encoding = 'UTF-8'
 
 # Mulitprocess/Threading time test
-
 time0 = ''
 time1 = ''
 timetime = ''
@@ -64,31 +63,30 @@ class Sitemap:
     Class that helps to create sitemaps of any site...
     about ..."Any Site"... still working around it :P
     """
-
     def __init__(self):
         super(Sitemap, self).__init__()
-        self.checked_links = list()
-        self.new_links = list()
+        self.checked_links = list()                     # the final links list of each thread work
+        self.new_links = list()                         # list with new links that appends to checked_links
         self.site_link = f'https://{args.domain}/'
         self.site_link_nos = f'http://{args.domain}/'
-        self.workers_count = args.workers
-        self.thread_links = list()
-        self.thread_name = ''
+        self.workers_count = args.workers               # number of threads: depends on number of 1st level folders
+        self.thread_links = list()                      # 1st level links that we need for threads to run on
+        self.thread_name = ''                           # name of the link from thread_links
 
-        self.checked_links_almost = []
-        self.checked_links_end = []
-        self.extra_links = []
-
-        self.temp_func_list = []
+        self.checked_links_almost = []                  # intermediate list
+        self.checked_links_end = []                     # the final list of all checked_links from each thread
+        self.extra_links = []                           # not used list
+        self.temp_func_list = []                        # intermediate list
 
     def request_session(self):
         """
         Establishing session with domain
-        есть особенность пока мне не понятная, при использовании сессии:
+        есть особенность пока мне не понятная, при использовании session.post:
         количество ссылок на том же сайте сокращается и процесс переходов проходит
-        в разы быстрее чем при использовании прямых реквест запросов с 520+ до 270+
-        вместо получасовой обработки 2 минутная, но при этом теряется возможность
+        в разы быстрее чем при использовании прямых request запросов с 520+ до 270+
+        и вместо получасовой обработки 3 минутная, и как + при этом не теряется возможность
         передавать данные юзерагента и соответсвенно возможность обхода антибот систем на сайте
+        (данная функция будет реализована позже)
         """
         s = requests.Session()
         s.headers.update({
@@ -96,20 +94,19 @@ class Sitemap:
             'User-Agent': f'{User_Agent}'
         })
         s.encoding = f'{encoding}'
+
         return s
 
     def start(self, session):
         """
-        Start programm
+        Start program function
 
         :param session:
         :return: req.text
         """
         req = session.post('https://' + f'{args.domain}')
         time.sleep(2)
-        # run_command(f'touch {oo}/TTTT.txt')
-        # with open(f'{oo}/TTTT.txt', 'w') as f:
-        #     f.write(req.text)
+
         return req.text
 
     def request(self, url, session):
@@ -118,7 +115,7 @@ class Sitemap:
 
         :param url:
         :param session:
-        :return: req
+        :return: session request with headers
         """
         req = session.post(f'{url}')
 
@@ -130,17 +127,15 @@ class Sitemap:
 
         :param thread_name:
         :param checked_links:
-        :param qq: try to put extra worker
-        :return: self.checked_links_end
+        :param qq: the way I find to to put extra worker(thread)
+        :return: self.checked_links
         """
         # thread name https://vistgroup.ru/company/
         if (qq + 1) == self.workers_count:
-            print('QQQQQQQ = worker count')
             thth = threading.Thread(target=self.crawling_1st_page_other_links,
                                     args=(0, 0, self.thread_links, self.checked_links))
             thth.start()
         if (qq + 1) != self.workers_count:
-            print('QQ ========')
             th = threading.Thread(target=self.crawling_web_pages, args=(0, 3, thread_name, checked_links))
             th.start()
 
@@ -174,12 +169,11 @@ class Sitemap:
         """
         # ОБРАБОТКА: ПОЛУЧАЕМ СПИСКИ SELF.CHECKED_LINKS, SELF.THREAD_LINKS УРОВНЯ 1
         self.start_crawling()
-        print('1st try links = \n', self.checked_links)
-        print('Thread Links =\n', self.thread_links)
 
+        # the way I found to put extra thread worker and further arg for func() that'll get links from robots.txt
         self.thread_links.append(f'https://{args.domain}/robot.txt')
 
-        # here we can put code to increase number of workers
+        # here we can put code to increase number of workers from args.worker
         self.workers_count = len(self.thread_links)
         print('Workers number =', self.workers_count)
 
@@ -188,9 +182,11 @@ class Sitemap:
         cmd = '-p'
         site_dir = f'{oo}/Sitemaps/{args.domain}'
         run_command(f'mkdir {cmd} ' + f'{site_dir}', echo=False)
+        # don't find out the other good way to take args from thread so I gonna write args to text files with echo
         run_command(f'touch ' + f'{site_dir}/links_from_thread.txt', echo=False)
         run_command(f'touch ' + f'{site_dir}/extra_thread.txt', echo=False)
 
+        # process list with workers
         workers_list = [multiprocessing.Process(target=self.worker,
                                                 args=(self.thread_links[i], [self.thread_links[i]], i))
                         for i in range(self.workers_count)]
@@ -202,6 +198,7 @@ class Sitemap:
         # ВРЕМЕННОЕ РЕШЕНИЕ В ВИДУ ТОГО, ЧТО НЕ РАЗОБРАЛСЯ КАК ДОСТАВАТЬ ДАННЫЕ ИЗ ПОТОКА, ВОЗМОЖНО СТОИТ
         # РАССМОТРЕТЬ СОПРОГРАММЫ ИЛИ ПЕРЕДЕЛАТЬ С ИСПОЛЬЗОВАНИЕМ АСИНХРОННОГО ПРОГРАММИРОВАНИЯ
         # СОХРЯНЕМ ВО ВРЕМЕННЫЙ ФАИЛ.TXT ССЫЛКИ ИЗ ПОТОКА ДАЛЕЕ УДАЛЯЕМ ЕГО ЗАПИСАВ В ПЕРЕМЕННУЮ ПЕРЕД ЭТИМ
+        # echo write args from threads to file.txt
         with open(f'{oo}/Sitemaps/{args.domain}/links_from_thread.txt', 'r') as f:
             a = f.read()
             self.checked_links_almost = a.split('\n')
@@ -215,12 +212,14 @@ class Sitemap:
         for linkss in self.temp_func_list:
             if linkss is not None and linkss != '' and linkss not in self.checked_links_end:
                 self.checked_links_end.append(linkss)
+        # remove temp .txt files
         run_command(f'rm {oo}/Sitemaps/{args.domain}/inks_from_thread.txt')
         run_command(f'rm {oo}/Sitemaps/{args.domain}/extra_thread.txt')
 
     def start_crawling(self):
         """
-        Crawling - активируем "ползать" по страничкам
+        Start crawling function() - активируем "ползать" по страничкам
+
         :return: self.checked_links, self.thread_links
         """
         print('https://' + f'{args.domain}')
@@ -228,6 +227,7 @@ class Sitemap:
         time.sleep(3)
         self.checked_links.append(f'https://{args.domain}/')
 
+        # crawl 1st page to find folders and then append em to thread_links list
         self.crawling_1st_page(control=0, count_try=0, thread_links=[], checked_links=self.checked_links)
 
         # ЗАГОТОВКА: СОЗДАНИЕ ПОТОКОВОЙ ОБРАБОТКИ НЕСКОЛЬКИХ ДОМЕНОВ ОДНОВРЕМЕННО
@@ -248,6 +248,7 @@ class Sitemap:
         """
         Web scraping is ON. Выскабливаем линки с сайта
         Check main page links then -> Check all found out links
+
         :return: list: checked_links [link1, link2, ...]
         """
         self.checked_links = checked_links
@@ -260,6 +261,7 @@ class Sitemap:
                 # /EN/SOLUTIONS/EXTRA/ -> ... ЦЕЛЬ - РАЗБИТЬ НА ПОТОКИ КАЖДЫЙ ЛИНК 1 УРОВНЯ
 
                 # ПЕРЕНОШУ ЭТУ ОБРАБОТКУ В ОТДЕЛЬНЫЙ ПОТОК КОТОРЫЙ БУДЕТ ИСКАТЬ МНЕ ДОПОЛНИТЕЛЬНЫЕ THREAD_LINKS
+                # В ФУНЦИИ crawling_1st_page_other_links ПОКА СЛОЖНО УСЛОЖНЯТЬ И БЕЗ ТОГО СЛОЖНУЮ ОБРАБОТКУ :P
                 count_try += 1
                 if count_try == 2:
                     for link in self.checked_links:
@@ -277,7 +279,7 @@ class Sitemap:
                     break
 
                 # ОБРАБОТКА: ПОИСК ССЫЛОК ТИПА /captcha2.php?captcha_sid=02529b019fa5ecfb5b45a1d38e04308e
-                # /vg-underground_C2_A0v2_C2_A0FR.png И ИГНОР ИХ В ДАЛЬНЕЙШЕМ   /*.PDF
+                # /vg-underground_C2_A0v2_C2_A0FR.png И ИГНОР ИХ В ДАЛЬНЕЙШЕМ А ТАКЖЕ:  /*.PDF
                 dot_in_the_endlink = 'None'
                 search_links = re.search(
                     '/[-;:+%"!@^±§&<>#_=?.a-zA-Z0-9]{2,100}[.]{1,100}[-;:+%"!@^±§&<>#_=?.a-zA-Z0-9]{2,100}$',
@@ -298,10 +300,10 @@ class Sitemap:
                     data_href = [a.get('data-href') for a in soup.findAll()]  # get "replace" links such as /en, /fr
                     src = [aa.get('src') for aa in soup.findAll()]
 
-                    # ОБРАБОТКА: DATA_HREF И SRC В СЛОВАРЬ -> NEW_LINKS
+                    # ОБРАБОТКА: DATA_HREF И SRC В СПИСОК -> NEW_LINKS
                     for data_h in data_href:
                         if data_h is not None:
-                            new_links.append(data_h)  # add "replace" links to new_links
+                            new_links.append(data_h)  # add "replace" links to new_links (/en, /fr ...)
                     for d_src in src:
                         if d_src is not None:
                             new_links.append(d_src)
@@ -313,6 +315,7 @@ class Sitemap:
                             c += 1
 
                     # ОБРАБОТКА: ПОИСК ФАЙЛА ROBOTS.TXT И SITEMAP.XML ДЛЯ ДОБАВЛЕНИЯ ССЫЛОК, В ПРОЦЕССЕ
+                    # thread_activator() str ±174
 
                     # ОБРАБОТКА: НОВЫЕ ССЫЛКИ В СЛОВАРЬ -> NEW_LINKS
                     counter = 0
@@ -329,7 +332,7 @@ class Sitemap:
                                 # this will remove only first slash in the link  /string  not every slash
 
                                 # join these relative links with domain to make them absolute links
-                                # pof = 'servises'
+                                # treatment for thread links -> thread_name == thread_links[i]
                                 pof = thread_name.split('/')[3]
                                 if pof in new_links[counter]:
                                     new_links[counter] = thread_name + new_links[counter].replace(f'{pof}/', '')
@@ -406,6 +409,7 @@ class Sitemap:
         We start with this crawling_1st_page() -> crawling_web_pages() + crawling_1st_page_other_links() as extra worker
         Web scraping is ON. Выскабливаем линки с сайта
         Check main page links then -> Check all found out links
+
         :return: list: checked_links [link1, link2, ...]
         """
         self.thread_links = thread_links
@@ -497,7 +501,6 @@ class Sitemap:
                     else:
                         counter2 = 0
                         while counter2 < len(new_links):
-
                             # here we can apply any filter so if the contain any of these strings then
                             # dont append this link into the final array where we are collecting /
                             # appending all the links found in that website
@@ -543,14 +546,14 @@ class Sitemap:
         else:
             time.sleep(2)
 
-        print('end links for sitemap ==========\n', self.checked_links)
+        print('End links from 1st page crawl =\n', self.checked_links)
         return self.checked_links, self.thread_links
 
     def crawling_1st_page_other_links(self, control, count_try, thread_links, checked_links):
         """
         Эта функция сделана только для того чтобы обработать ссылки, которые не вошли в thread_links
         в дальнейшем будет доработана в функции crawling_1st_page()
-        временное решение
+        временное решение, пока пришлось ctrl+c -> ctrl+p  x3
         """
         self.thread_links = thread_links
         self.checked_links = checked_links
@@ -649,7 +652,7 @@ class Sitemap:
 
     def creating_sitemap(self):
         """
-        Sitemap cr8
+        Sitemap cr8 func()
         """
         time.sleep(2)
         os.system('clear')
@@ -666,13 +669,13 @@ class Sitemap:
         else:
             tree = ET.ElementTree(urlset)
 
-            print("Your Sitemap is Ready! \n Check link below:")
+            print("Your Sitemap is Ready!\n Don't close, program is still running...\n Check link below later:")
 
         return tree
 
     def save_urls_to_filedat(self, checked_links=None):
         """
-        Save url links in Sitemap.xml to sitemap_urls.dat
+        Save url links from sitemap.xml to sitemap_urls.dat
 
         :param checked_links: None
         :return: file.dat as f:  f
@@ -696,7 +699,10 @@ class Sitemap:
 
     def mkdir(self, link_list=None, cmd=None):
         """
-        Create folders with mkdir command
+        Create many folders with mkdir command,
+        use it to get mirror view of site folders
+
+        mkdir() -> save_urls_to_filedat()
         """
         cmd = '-p'
         site_dir = f'~/Sitemaps/{args.domain}'
@@ -726,7 +732,9 @@ class Sitemap:
 
     def mkdir_light(self, link_list=None, cmd=None):
         """
-        Create folders with mkdir command
+        Create folders, files with mkdir command
+
+        mkdir_light() -> save_urls_to_filedat()
         """
         cmd = '-p'
         site_dir = f'~/Sitemaps/{args.domain}'
@@ -740,7 +748,7 @@ class Sitemap:
         return sm_file_link
 
 
-class SCVCreator:
+class CSVCreator:
     """
     Categorize a list of URLs by file path.
 
@@ -750,13 +758,13 @@ class SCVCreator:
 
     # Set global variables
     def __init__(self):
-        super(SCVCreator, self).__init__()
+        super(CSVCreator, self).__init__()
         self.sitemap_layers = pd.DataFrame()  # Store results in a dataframe
 
     # Main script functions, слоев 5
     def peel_layers(self, urls, layers=5):
         """
-                Builds a dataframe containing all unique page identifiers up
+        Builds a dataframe containing all unique page identifiers up
         to a specified depth and counts the number of sub-pages for each.
         Prints results to a CSV file.
 
@@ -801,7 +809,7 @@ class SCVCreator:
         # Return the dataframe
         return sitemap_layers
 
-    def make_scv(self):
+    def make_csv(self):
 
         sitemap_urls = open(f'{oo}/Sitemaps/{args.domain}/sitemap_urls.dat', 'r').read().splitlines()
         print(f'Loaded {len(sitemap_urls)} URLs')
@@ -1115,7 +1123,7 @@ if __name__ == '__main__':
 
     wrong = re.search(
                     '/[-;:+%"!@^±§&<>#_=?.a-zA-Z0-9]{2,100}[.]{1,100}[-;:+%"!@^±§&<>#_=?.a-zA-Z0-9]{2,100}$',
-                    args.domain)
+                    args.domain)  # ignore dark net sites :P
     w2 = args.domain
     if '/' in w2 or ',' in w2 or 'http' in w2 or 'https' in w2 or wrong is not None:
         print('Something Wrong with Domain')
@@ -1145,12 +1153,8 @@ if __name__ == '__main__':
                 text = SMCr8or.start(ses)
 
                 # crawling + folder cr8ion
-
-                # SMCr8or.start_crawling()
                 SMCr8or.thread_activator()
-
-                # SMCr8or.mkdir()
-                SMCr8or.mkdir_light()
+                SMCr8or.mkdir_light()   # or SMCr8or.mkdir()
 
                 print(f'===========CR8 DAT===========')
 
@@ -1160,16 +1164,16 @@ if __name__ == '__main__':
                 print(f'===========CR8 SCV=========== {time0}')
 
                 # creating scv file
-                creator = SCVCreator()
-                creator.make_scv()
+                creator = CSVCreator()
+                creator.make_csv()
 
                 print(f'===========CR8 PDF=========== {time1}')
 
-                # create pdf/jpg/png/tif (chouse in terminal)
+                # create pdf/jpg/png/tif (chouse in terminal, default = pdf)
                 creator2 = VisualSitemapView()
                 creator2.make_pdf_jpg()
 
                 time_ = time.time()
                 timeend = time_ - timestart
-                print(
-                    f'===========THE END===========   Time = {str(timeend).split(".")[0]}.{str(timeend).split(".")[1][:3]} sec')
+                print(f'===========THE END=========== Time = '
+                      f'{str(timeend).split(".")[0]}.{str(timeend).split(".")[1][:3]} sec')
