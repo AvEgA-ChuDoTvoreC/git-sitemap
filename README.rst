@@ -2,6 +2,11 @@
 
 This project should help you with smth!
 
+work only on limited sites for example neurobotics.ru
+=====================================================
+
+other site so so))
+
 
 ======
 Sitemap
