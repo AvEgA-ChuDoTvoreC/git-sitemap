@@ -213,7 +213,7 @@ class Sitemap:
             if linkss is not None and linkss != '' and linkss not in self.checked_links_end:
                 self.checked_links_end.append(linkss)
         # remove temp .txt files
-        run_command(f'rm {oo}/Sitemaps/{args.domain}/inks_from_thread.txt')
+        run_command(f'rm {oo}/Sitemaps/{args.domain}/links_from_thread.txt')
         run_command(f'rm {oo}/Sitemaps/{args.domain}/extra_thread.txt')
 
     def start_crawling(self):
