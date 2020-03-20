@@ -5,7 +5,7 @@ This project should help you with smth!
 Work with limited sites for example: neurobotics.ru
 =====================================================
 
-other site: so so :))
+other sites: so so :))
 
 
 ======
@@ -66,5 +66,5 @@ Get this modules be4 start::
 Contact me for any suggestions
 ==============================
 
-I'm new to python and programing, so will be glad to get some resposes
+I'm new to python and programing, so will be glad to get some responses
 toxicwaste2u@gmail.com
