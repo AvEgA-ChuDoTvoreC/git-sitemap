@@ -57,3 +57,9 @@ Get this modules be4 start::
     pip3 install xml.etree.cElementTree
     pip3 install pandas
     pip3 install graphviz
+    
+Contact me for any suggestions
+==============================
+
+I'm new to python and programing, so will be glad to get some resposes
+toxicwaste2u@gmail.com
