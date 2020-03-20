@@ -13,13 +13,15 @@ Sitemap
 Overview
 ========
 
+I hope you put sitemapBuilder.py to your home directory: ~/
+
 Please open Terminal and run this commands to start.
 
     cd ~/
     
     sitemapBuilder.py --help
     
-    sitemapBuilder.py exampledomain.ru -d 10 -l10
+    sitemapBuilder.py exampledomain.ru -d 10 -l 10
 
 Requirements
 ============
@@ -32,4 +34,4 @@ Install
 
 The quick way::
 
-    pip install test_sitemap_end.py :P
+    pip install sitemapBuilder.py  * This func not work yet :P
