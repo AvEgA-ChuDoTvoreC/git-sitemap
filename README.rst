@@ -2,10 +2,10 @@
 
 This project should help you with smth!
 
-Work with limited sites for example: neurobotics.ru
-=====================================================
+Some bugs fixed, almost stable version, sites for example: neurobotics.ru, crawler-test.com
+===========================================================================================
 
-other sites: so so :))
+in progress... :))
 
 
 ======
