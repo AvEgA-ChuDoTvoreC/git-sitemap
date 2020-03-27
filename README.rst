@@ -2,16 +2,16 @@
 
 This project should help you with smth!
 
-Some bugs fixed, almost stable version, sites for example: neurobotics.ru, crawler-test.com, yande.ru
+Some bugs fixed, almost stable version, sites for example: neurobotics.ru, crawler-test.com, yandex.ru
 =====================================================================================================
 
 Test commands. Try this:
 
     python3 sitemapBuilder.py yandex.ru -fd 2
     
-    sitemapBuilder.py crawler-test.com -fd 3
+    python3 sitemapBuilder.py crawler-test.com -fd 3
 
-    sitemapBuilder.py exampledomain.ru -fd 4 -d 10 -l 10
+    python3 sitemapBuilder.py exampledomain.ru -fd 4 -d 10 -l 10
 
 
 ======
