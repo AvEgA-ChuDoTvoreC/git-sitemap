@@ -159,7 +159,7 @@ class Sitemap:
         self.checked_links_almost = []                  # intermediate list
         self.checked_links_end = []                     # the final list of all checked_links from each thread
         self.checked_threads = []                           # not used list
-        self.temp_func_list = []                        # intermediate list
+        # self.temp_func_list = []                        # intermediate list
 
     def status_codes_checker(self, code):
         """
@@ -379,9 +379,6 @@ class Sitemap:
         run_command(f'touch ' + f'{site_dir}/links_from_thread.txt', echo=False)
         run_command(f'touch ' + f'{site_dir}/extra_thread.txt', echo=False)
 
-        # ['http://vistgroup.ru/company/', 'http://vistgroup.ru/solutions/', 'http://vistgroup.ru/media/', ...]
-        # self.thread_folders[i] == 'http://vistgroup.ru/company/'
-        # (thread_name = 'http://vistgroup.ru/company/', checked_links = ['http://vistgroup.ru/company/'], qq = i)
         # process list with workers
         workers_list = [multiprocessing.Process(target=self.worker,
                                                 args=(self.thread_folders[i], [self.thread_folders[i]], i))
@@ -405,15 +402,15 @@ class Sitemap:
                     not links.endswith(dot_in_link):
                 self.checked_links_end.append(links)
 
-        with open(f'{home}/Sitemaps/{args.domain}/extra_thread.txt', 'r') as f:
-            b = f.read()
-            self.temp_func_list = b.split('\n')
-        for linkss in self.temp_func_list:
-            if linkss is not None and linkss != '' and linkss not in self.checked_links_end:
-                self.checked_links_end.append(linkss)
+        # with open(f'{home}/Sitemaps/{args.domain}/extra_thread.txt', 'r') as f:
+        #     b = f.read()
+        #     self.temp_func_list = b.split('\n')
+        # for linkss in self.temp_func_list:
+        #     if linkss is not None and linkss != '' and linkss not in self.checked_links_end:
+        #         self.checked_links_end.append(linkss)
         # remove temp .txt files
         run_command(f'rm {home}/Sitemaps/{args.domain}/links_from_thread.txt')
-        run_command(f'rm {home}/Sitemaps/{args.domain}/extra_thread.txt')
+        # run_command(f'rm {home}/Sitemaps/{args.domain}/extra_thread.txt')
 
     def start_crawling(self):
         """
@@ -442,16 +439,6 @@ class Sitemap:
         # for w in workers_list:
         #     w.join()
 
-        # print('checked_links + thread links + checked threads:\n', self.checked_links, '\n', self.thread_folders,
-        #       '\n', self.checked_threads)
-        # # ['https://vistgroup.ru/', 'https://vistgroup.ru/company/about/', 'https://vistgroup.ru/solutions/', ... ]
-        # # ['/company/', '/solutions/', '/media/', '/contacts/', '/en/', '/es/', ... , '/upload/']
-        # self.crawling_web_pages(control=0, count_try=3,
-        #                         thread_folders=self.thread_folders, checked_links=self.checked_threads,
-        #                         thread_name='/company/', qq=1)
-        # print('END  checked_links + thread links + checked threads:\n', self.checked_links, '\n', self.thread_folders,
-        #       '\n', self.checked_threads)
-        # print('TEMP\n', self.temp_func_list)
         return self.checked_links, self.thread_folders, self.checked_threads
 
     # ex: checked_links = [ 'https://vistgroup.ru/', 'https://vistgroup.ru/company/about/', ... ]
@@ -632,8 +619,6 @@ class Sitemap:
                 for line in self.checked_links:
                     text_links += (line + '\n')
                     if line not in f:
-                        # f.write(text_links)
-                        # >>>>>>>>>>>>>>>>>>>>>>> don't forget
                         run_command(f'echo "{text_links}" >> {home}/Sitemaps/{args.domain}/links_from_thread.txt',
                                     echo=False)
             time.sleep(0.1)
@@ -768,9 +753,6 @@ class Sitemap:
             for line in my_lines:
                 soup = BeautifulSoup(line, "html.parser")
                 new_links = [element.text for element in soup.findAll('loc')]
-                # for link in new_links:
-                # print(link)
-            # print(new_links)
 
         with open(f'{home}/Sitemaps/{args.domain}/sitemap_urls.dat', 'w') as f:
             for i in new_links:
@@ -1122,7 +1104,7 @@ if __name__ == '__main__':
               '\n'
               'check that sitemapBuilder.py is in your Home directory\n'
               '-----',
-        formatter_class=argparse.RawDescriptionHelpFormatter,  # формат красивого отображения, см. док-ю
+        formatter_class=argparse.RawDescriptionHelpFormatter,  # pretty print format
         description=textwrap.dedent('''
             Please Note, that all sitemaps will be at your home directory: 
             for example -  /Users/agent007/Sitemaps/github.com  
@@ -1150,10 +1132,10 @@ if __name__ == '__main__':
     )
     arg_parser.add_argument(
         '-l', '--level',
-        dest="level",  # возвращает имя аргументу через args = parse_args() -> if args.get('level'):       nargs='?',
-        default=5,  # значение по умолчанию для глубины
+        dest="level",  # returns the name of the argument through args = parse_args() -> if args.get('level'):
+        default=5,  # default value for depth
         type=int,
-        metavar='',  # имя аргумента в сообщении использования
+        metavar='',  # argument name in usage message
         help="search depth level (fo CSVCreator), глубина рекурсии поиска ссылок (для CSVCreator)",
         action="store"
     )
@@ -1164,20 +1146,20 @@ if __name__ == '__main__':
     )
     arg_parser.add_argument(
         '-w', '--workers',
-        dest="workers",  # возвращает имя аргументу через args = parse_args() -> if args.get()
-        default=5,  # значение по умолчанию для глубины
+        dest="workers",
+        default=5,
         type=int,
-        metavar='',  # имя аргумента в сообщении использования
+        metavar='',
         help="this workers = threads, the number will auto set depending on number of 1st level links, "
              "запускаем потоки исходя из количества папок первого уровня",
         action="store"
     )
     arg_parser.add_argument(
         '-fd', '--folder-depth',
-        dest="fdepth",  # возвращает имя аргументу через args = parse_args() -> if args.get()
-        default=2,  # значение по умолчанию для глубины
+        dest="fdepth",
+        default=2,
         type=int,
-        metavar='',  # имя аргумента в сообщении использования
+        metavar='',
         help="THE MOST USEFUL ARGUMENT, default set -fd 2, if you try to make sitemap and graph map for yandex.ru "
              "or google.com it will stops on /news/ folder and all will be good. Else if you set -fd 4 for yandex.ru "
              "it wil find links over 50 000+ in /news/ folder and probably you get request exception or any bug "
