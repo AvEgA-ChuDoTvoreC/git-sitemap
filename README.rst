@@ -24,7 +24,7 @@ Sitemap
 .. image:: https://img.shields.io/badge/python-3.5%2B-brightgreen
    :alt: Python Version
 
-.. image:: https://img.shields.io/badge/sitemap%20ver-1.0-blue
+.. image:: https://img.shields.io/badge/sitemap%20ver-1.1-blue
    :alt: sitemapBuilder Version
    
 
