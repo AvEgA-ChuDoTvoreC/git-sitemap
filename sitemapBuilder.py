@@ -26,9 +26,8 @@ import xml.etree.cElementTree as ET
 import pandas as pd
 import graphviz
 
-"""
-User-Agent: Mozilla/<version> (<system-information>) <platform> (<platform-details>) <extensions>
-"""
+"""User-Agent: Mozilla/<version> (<system-information>) <platform> (<platform-details>) <extensions>"""
+
 User_Agent = 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; WOW64; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; MSOffice 12)'
 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36'
 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; WOW64; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; MSOffice 12)'
@@ -38,6 +37,96 @@ encoding = 'UTF-8'
 time0 = ''
 time1 = ''
 timetime = ''
+
+"""List of status codes:
+Diagram of web-server decision based on headers
+Code statistic from log analyzer: Webalizer
+1xx: Informational:
+2xx: Success:
+3xx: Redirection:
+4xx: Client Error:
+5xx: Server Error:
+check https://ru.wikipedia.org/wiki/Список_кодов_состояния_HTTP"""
+
+stat_code_dict = {
+    '100': 'Continue («продолжай»)[2][3];',
+    '101': 'Switching Protocols («переключение протоколов»)[2][3];',
+    '102': 'Processing («идёт обработка»).',
+
+    '200': 'OK («хорошо»)[2][3];',
+    '201': 'Created («создано»)[2][3][4];',
+    '202': 'Accepted («принято»)[2][3];',
+    '203': 'Non-Authoritative Information («информация не авторитетна»)[2][3];',
+    '204': 'No Content («нет содержимого»)[2][3];',
+    '205': 'Reset Content («сбросить содержимое»)[2][3];',
+    '206': 'Partial Content («частичное содержимое»)[2][3];',
+    '207': 'Multi-Status («многостатусный»)[5];',
+    '208': 'Already Reported («уже сообщалось»)[6];',
+    '226': 'IM Used («использовано IM»).',
+
+    '300': 'Multiple Choices («множество выборов»)[2][7];',
+    '301': 'Moved Permanently («перемещено навсегда»)[2][7];',
+    '302': 'Moved Temporarily («перемещено временно»)[2][7];',
+    # '302': 'Found («найдено»)[7];',
+    '303': 'See Other («смотреть другое»)[2][7];',
+    '304': 'Not Modified («не изменялось»)[2][7];',
+    '305': 'Use Proxy («использовать прокси»)[2][7];',
+    '306': '— зарезервировано (код использовался только в ранних спецификациях)[7];',
+    '307': 'Temporary Redirect («временное перенаправление»)[7];',
+    '308': 'Permanent Redirect («постоянное перенаправление»)[8].',
+
+    '400': 'Bad Request («плохой, неверный запрос»)[2][3][4];',
+    '401': 'Unauthorized («не авторизован (не представился)»)[2][3];',
+    '402': 'Payment Required («необходима оплата»)[2][3];',
+    '403': 'Forbidden («запрещено (не уполномочен)»)[2][3];',
+    '404': 'Not Found («не найдено»)[2][3];',
+    '405': 'Method Not Allowed («метод не поддерживается»)[2][3];',
+    '406': 'Not Acceptable («неприемлемо»)[2][3];',
+    '407': 'Proxy Authentication Required («необходима аутентификация прокси»)[2][3];',
+    '408': 'Request Timeout («истекло время ожидания»)[2][3];',
+    '409': 'Conflict («конфликт»)[2][3][4];',
+    '410': 'Gone («удалён»)[2][3];',
+    '411': 'Length Required («необходима длина»)[2][3];',
+    '412': 'Precondition Failed («условие ложно»)[2][3][9];',
+    '413': 'Payload Too Large («полезная нагрузка слишком велика»)[2][3];',
+    '414': 'URI Too Long («URI слишком длинный»)[2][3];',
+    '415': 'Unsupported Media Type («неподдерживаемый тип данных»)[2][3];',
+    '416': 'Range Not Satisfiable («диапазон не достижим»)[3];',
+    '417': 'Expectation Failed («ожидание не удалось»)[3];',
+    '418': 'I’m a teapot («я — чайник»);',
+    '419': 'Authentication Timeout (not in RFC 2616) («обычно ошибка проверки CSRF»);',
+    '421': 'Misdirected Request [10];',
+    '422': 'Unprocessable Entity («необрабатываемый экземпляр»);',
+    '423': 'Locked («заблокировано»);',
+    '424': 'Failed Dependency («невыполненная зависимость»);',
+    '426': 'Upgrade Required («необходимо обновление»);',
+    '428': 'Precondition Required («необходимо предусловие»)[11];',
+    '429': 'Too Many Requests («слишком много запросов»)[11];',
+    '431': 'Request Header Fields Too Large («поля заголовка запроса слишком большие»)[11];',
+    '449': 'Retry With («повторить с»)[1];',
+    '451': 'Unavailable For Legal Reasons («недоступно по юридическим причинам»)[12].',
+    '499': 'Client Closed Request (клиент закрыл соединение);',
+
+    '500': 'Internal Server Error («внутренняя ошибка сервера»)[2][3];',
+    '501': 'Not Implemented («не реализовано»)[2][3];',
+    '502': 'Bad Gateway («плохой, ошибочный шлюз»)[2][3];',
+    '503': 'Service Unavailable («сервис недоступен»)[2][3];',
+    '504': 'Gateway Timeout («шлюз не отвечает»)[2][3];',
+    '505': 'HTTP Version Not Supported («версия HTTP не поддерживается»)[2][3];',
+    '506': 'Variant Also Negotiates («вариант тоже проводит согласование»)[13];',
+    '507': 'Insufficient Storage («переполнение хранилища»);',
+    '508': 'Loop Detected («обнаружено бесконечное перенаправление»)[14];',
+    '509': 'Bandwidth Limit Exceeded («исчерпана пропускная ширина канала»);',
+    '510': 'Not Extended («не расширено»);',
+    '511': 'Network Authentication Required («требуется сетевая аутентификация»)[11];',
+    '520': 'Unknown Error («неизвестная ошибка»)[15];',
+    '521': 'Web Server Is Down («веб-сервер не работает»)[15];',
+    '522': 'Connection Timed Out («соединение не отвечает»)[15];',
+    '523': 'Origin Is Unreachable («источник недоступен»)[15];',
+    '524': 'A Timeout Occurred («время ожидания истекло»)[15];',
+    '525': 'SSL Handshake Failed («квитирование SSL не удалось»)[15];',
+    '526': 'Invalid SSL Certificate («недействительный сертификат SSL»)[15].'
+}
 
 
 def run_command(cmd, echo=True, exit_on_error=False):
@@ -72,9 +161,78 @@ class Sitemap:
         self.checked_threads = []                           # not used list
         self.temp_func_list = []                        # intermediate list
 
+    def status_codes_checker(self, code):
+        """
+        Check the response status code match with stat_code_dict and print message
+            for ex: 401 Unauthorized
+        """
+        code = str(code)
+        if code.startswith('1'):
+            print(code + ' ' + stat_code_dict[code])
+        elif code.startswith('2'):
+            print(code + ' ' + stat_code_dict[code])
+        elif code.startswith('3'):
+            print(code + ' ' + stat_code_dict[code])
+        elif code.startswith('4'):
+            print(code + ' ' + stat_code_dict[code])
+        elif code.startswith('5'):
+            print(code + ' ' + stat_code_dict[code])
+
+        # return code
+
+    def chouse_filter(self, filter):
+        """This function will filter links.
+            for example you don't want: '-' or '?' or '_' in your sitemap links then chouse filter='max',
+            else chouse filter='min'
+            .......in development
+        """
+        if filter == 'max':
+            pass
+
+        elif filter == 'min':
+            pass
+        else:
+            pass
+
+    def chouse_depth(self, fdepth, link_list):
+        """Folders number depth you want to check in links"""
+        if type(fdepth) is not int or fdepth < 1:
+            fdepth = 1
+            print('Wrong folders depth. Setting: -fd 1')
+        if fdepth > 10:
+            fdepth = 10
+            print('Too high depth. Setting: -fd 10')
+
+        fdepth_list = list()
+        for link in link_list:
+            aa = '/'
+            folder = link.replace(f'{self.site_link}', '').split('/')
+            for i in folder:
+                if i == '':
+                    folder.remove(i)
+            for i in range(len(folder)):
+                if i <= fdepth - 1:
+                    aa = aa + f'{folder[i]}/'
+            # print('aa=', aa)
+            if aa is not "/" and "mailto" not in aa and "#" not in aa and "tel" not in aa and aa not in fdepth_list and \
+                    " " not in aa and "?" not in aa and ":" not in aa and not aa.endswith('dot'):
+                fdepth_list.append(aa)
+            #     print('appended aa=', aa)
+            # print('folder=', folder)
+
+        # print(fdepth_list)
+        cc = 0
+        while cc < len(fdepth_list):
+            for i in fdepth_list:
+                fdepth_list[cc] = f'{self.site_link_nos}' + i
+                cc += 1
+
+        return fdepth_list
+
     def request_session(self):
         """
         Establishing session with domain
+
         есть особенность пока мне не понятная, при использовании session.post:
         количество ссылок на том же сайте сокращается и процесс переходов проходит
         в разы быстрее чем при использовании прямых request запросов с 520+ до 270+
@@ -127,13 +285,13 @@ class Sitemap:
         if (qq + 1) != self.workers_count:
             print('Main worker ', qq + 1)
             th = threading.Thread(target=self.crawling_web_pages, args=(0, 3, self.thread_folders, self.checked_threads,
-                                                                        thread_name))
+                                                                        thread_name, qq))
             th.start()
         else:
             if (qq + 1) == self.workers_count:
                 print('Extra worker', qq + 1)
                 thth = threading.Thread(target=self.crawling_1st_page_other_links,
-                                    args=(0, 0, self.checked_threads, self.checked_links))
+                                    args=(0, self.thread_folders, self.checked_threads, self.checked_links, qq))
                 thth.start()
 
         return self.checked_links
@@ -151,14 +309,22 @@ class Sitemap:
         # print('\n\nBreak worker\n\n')
         pass
 
-    def extra_worker(self):
-        # thread_folders = self.thread_folders
-        # checked_links = self.checked_links
-        #
-        # thth = threading.Thread(target=self.crawling_web_pages, args=(0, 3, thread_folders, checked_links))
-        # thth.start()
-        # thth.join()
-        pass
+    def dot_in_the_endlink(self, counter_x=None, link_list=None, link=None):
+        dot_in_the_endlink = 'None'
+        if link is None:
+            search_links = re.search(
+                '/[-;:+%"!@^±§& <>#_=?.a-zA-Z0-9]{2,100}[.]{1,100}[-;:+%"!@^±§& <>#_=?.a-zA-Z0-9]{2,100}$',
+                link_list[counter_x])
+            if search_links is not None:
+                dot_in_the_endlink = search_links.group()
+        else:
+            search_links = re.search(
+                '/[-;:+%"!@^±§& <>#_=?.a-zA-Z0-9]{2,100}[.]{1,100}[-;:+%"!@^±§& <>#_=?.a-zA-Z0-9]{2,100}$',
+                link)
+            if search_links is not None:
+                dot_in_the_endlink = search_links.group()
+
+        return dot_in_the_endlink
 
     def BSoup(self, source_code, parser=None):
         """
@@ -196,7 +362,8 @@ class Sitemap:
         # PROCESSING: WE RECEIVE LIST SELF.CHECKED_LINKS, SELF.THREAD_FOLDERS LEVELS 1
         self.start_crawling()
 
-        # the way I found to put extra thread worker and further arg for func() that'll get links from robots.txt
+        # the way I found to put extra thread worker.
+        # in development: further args for func() that'll get links from robots.txt
         self.thread_folders.append(f'https://{args.domain}/robot.txt')
 
         # here we can put code to increase number of workers from args.worker
@@ -231,8 +398,11 @@ class Sitemap:
         with open(f'{home}/Sitemaps/{args.domain}/links_from_thread.txt', 'r') as f:
             a = f.read()
             self.checked_links_almost = a.split('\n')
+
         for links in self.checked_links_almost:
-            if links is not None and links != '':
+            dot_in_link = self.dot_in_the_endlink(link_list=self.checked_links_almost, link=links)
+            if links is not None and links != '' and links not in self.checked_links_end and \
+                    not links.endswith(dot_in_link):
                 self.checked_links_end.append(links)
 
         with open(f'{home}/Sitemaps/{args.domain}/extra_thread.txt', 'r') as f:
@@ -288,7 +458,8 @@ class Sitemap:
     def crawling_web_pages(self, control, count_try, thread_folders, checked_links, thread_name=None, qq=None):
         """
         We start with:
-        crawling_web_pages(0, 0, [], [https://domain]) -> crawling_web_pages() + crawling_1st_page_other_links() as extra worker
+        crawling_web_pages(0, 0, [], [https://domain]) -> crawling_web_pages() +
+        crawling_1st_page_other_links() as extra worker
         Web scraping is ON. Выскабливаем линки с сайта
         Check main page links then -> Check all found out links
 
@@ -297,10 +468,10 @@ class Sitemap:
         self.thread_folders = thread_folders
         self.checked_links = checked_links
 
-        # check all links in checked_links
+        # CHECK ALL LINKS IN LIST: CHECKED_LINKS
         # I: fill in lists: checked_links, checked_threads, thread_folders
         # II: start threads processing
-        # III: start extra thread processing for links except checked_threads links
+        # III: start extra thread processing for links except checked_threads links, thread_folders
         while control < len(self.checked_links):
             try:
                 # PROCESSING: USE .SPLIT('/') FUNCTION TO EVERY LINK AND SEPARATELY CHECK EACH LEVEL 1 FOLDER
@@ -312,7 +483,8 @@ class Sitemap:
                 if 2 <= count_try <= 3 and len(self.checked_links) > 1:   # and thread_name is None:
                     for link in self.checked_links:
                         k = link.split('/')
-                        if f'/{k[3]}/' not in self.thread_folders and k[3] != "" and "mailto" not in k and "tel" not in k:
+                        if f'/{k[3]}/' not in self.thread_folders and k[3] != "" and \
+                                "mailto" not in k and "tel" not in k:
                             self.thread_folders.append(f'/{k[3]}/')
                             self.checked_threads.append(self.site_link_nos + f'/{k[3]}/')
                     # ['/company/', '/solutions/', '/media/', '/contacts/', '/en/', '/local/', '/bitrix/', '/upload/']
@@ -322,109 +494,130 @@ class Sitemap:
 
                 # PROCESSING: FIND ALL LINKS LIKE /captcha2.php?captcha_sid=02529b019fa5ecfb5b45a1d38e04308e
                 # /vg-underground_C2_A0v2_C2_A0FR.png AND IGNORE THEM, ALSO IGNORE:  /*.PDF
-                dot_in_the_endlink = 'None'
-                search_links = re.search(
-                    '/[-;:+%"!@^±§& <>#_=?.a-zA-Z0-9]{2,100}[.]{1,100}[-;:+%"!@^±§& <>#_=?.a-zA-Z0-9]{2,100}$',
-                    self.checked_links[control])
-                # if link is ok then make response
-                if search_links is not None:
-                    dot_in_the_endlink = search_links.group()
+                dot_in_link = self.dot_in_the_endlink(counter_x=control, link_list=self.checked_links)
 
-                elif not self.checked_links[control].endswith(dot_in_the_endlink):
-                    responses = self.request(self.checked_links[control], self.request_session())
-                    source_code = responses.text
+                if not self.checked_links[control].endswith(dot_in_link):
+                    if thread_name is not None:
+                        try:
+                            # setting folders number depth you want to check in links
+                            self.checked_links = self.chouse_depth(args.fdepth, self.checked_links)
 
-                    # PROCESSING: FIND ALL HREF, DATA_HREF, SRC -> AND PUT IN LIST:  NEW_LINKS
-                    new_links = self.BSoup(source_code=source_code, parser="html.parser")
+                            responses = self.request(self.checked_links[control], self.request_session())
+                            source_code = responses.text
+                            status_code = responses.status_code
+                        except IndexError as err:
+                            raise UserError('Error!', err)
+                    else:
+                        responses = self.request(self.checked_links[control], self.request_session())
+                        source_code = responses.text
+                        status_code = responses.status_code
 
-                    # PROCESSING: LINKS FROM NEW_LINKS TO -> CHECKED_LINKS
-                    counter = 0
-                    while counter < len(new_links):
-                        # this code is for thouse relative links witch starts with / slash
-                        if "http" not in new_links[counter]:  # checking if the linking on this site is absolute or
-                            # relative -> starts with http or /
-                            # НА вход '/company/', '/solutions/'
-                            verify0 = new_links[counter][0]
+                    # check status, prints status, if 400+ pass
+                    self.status_codes_checker(code=status_code)
+                    if str(status_code).startswith('4'):
+                        control = control + 1
+                    else:
+                        # PROCESSING: FIND ALL HREF, DATA_HREF, SRC -> AND PUT IN LIST:  NEW_LINKS
+                        new_links = self.BSoup(source_code=source_code, parser="html.parser")
 
-                            # getting first character of every link & if it starts with slash / then
-                            # we remove this / slash because we have already added the slash at the end of the domain
-                            if verify0 == '/':
-                                # join thread links with domain to make them absolute links
-                                # processing for thread links -> thread_name == thread_folders[i]
+                        # PROCESSING: LINKS FROM NEW_LINKS TO -> CHECKED_LINKS
+                        counter = 0
+                        while counter < len(new_links):
+                            # this code is for thouse relative links witch starts with / slash
+                            if "http" not in new_links[counter]:  # checking if the linking on this site is absolute or
+                                # relative -> starts with http or /
+                                # Enter '/company/', '/solutions/'
+                                verify0 = new_links[counter][0]
 
-                                # /mobile/separate_desktop/
-                                new_links[counter] = new_links[counter][:1].replace('/', '') + new_links[counter][1:]
-                                # mobile/separate_desktop/
-                                # this will remove only first slash in the link  /string  not every slash
+                                # getting first character of every link & if it starts with slash / then
+                                # we remove this / slash bec we have already added the slash at the end of the domain
+                                if verify0 == '/':
+                                    # join thread links with domain to make them absolute links
+                                    # processing for thread links -> thread_name == thread_folders[i]
 
-                                # join these relative links with domain to make them absolute links
-                                new_links[counter] = self.site_link + new_links[counter]
-                                # ['https://vistgroup.ru/company/', 'https://vistgroup.ru/solutions/']
+                                    # /mobile/separate_desktop/
+                                    new_links[counter] = new_links[counter][:1].replace('/', '') + new_links[counter][1:]
+                                    # mobile/separate_desktop/
+                                    # this will remove only first slash in the link  /string  not every slash
+
+                                    # join these relative links with domain to make them absolute links
+                                    new_links[counter] = self.site_link + new_links[counter]
+                                    # ['https://vistgroup.ru/company/', 'https://vistgroup.ru/solutions/']
+                                else:
+                                    # this code is for thouse relative links witch doesn't starts with / slash
+                                    new_links[counter] = self.site_link + new_links[counter]
+                                    counter = counter + 1
                             else:
-                                # this code is for thouse relative links witch doesn't starts with / slash
-                                new_links[counter] = self.site_link + new_links[counter]
                                 counter = counter + 1
                         else:
-                            counter = counter + 1
-                    else:
-                        counter2 = 0
-                        while counter2 < len(new_links):
-                            if thread_name is None and qq is None:
-                                # here we can apply any filter so if the contain any of these strings then
-                                # don't append this link into the final array where we are collecting /
-                                # appending all the links found in that website
-                                if "#" not in new_links[counter2] and "mailto" not in new_links[counter2] and \
-                                        ".jpg" not in new_links[counter2] and new_links[counter2] not in \
-                                        self.checked_links and self.site_link in new_links[counter2]:
-                                    # new_links[counter2] not in self.checked_links:- this condition is very important,
-                                    # this will never append a link in the array which already exist in the array...
-                                    # without this condition this script will never end and start appending the same
-                                    # site / link again:
+                            counter2 = 0
+                            while counter2 < len(new_links):
+                                if thread_name is None and qq is None:
+                                    # here we can apply any filter so if the contain any of these strings then
+                                    # don't append this link into the final array where we are collecting /
+                                    # appending all the links found in that website
+                                    if "#" not in new_links[counter2] and "mailto" not in new_links[counter2] and \
+                                            ".jpg" not in new_links[counter2] and new_links[counter2] not in \
+                                            self.checked_links and self.site_link in new_links[counter2]:
+                                        # new_links[counter2] not in self.checked_links:- this condition is very
+                                        # important,
+                                        # this will never append a link in the array which already exist in the array...
+                                        # without this condition this script will never end and start appending the same
+                                        # site / link again:
 
-                                    # last condition of script will add only the links in the array which have the
-                                    # domain and will never append the links which redirect to another websites
-                                    # (many website have links to youtube facebook etc)
-                                    self.checked_links.append(new_links[counter2])
+                                        # last condition of script will add only the links in the array which have the
+                                        # domain and will never append the links which redirect to another websites
+                                        # (many website have links to youtube facebook etc)
+                                        self.checked_links.append(new_links[counter2])
 
-                                    os.system('clear')
-                                    print(str(control) + '/' + str(len(self.checked_links)))
-                                    print('')
-                                    print(str(control) + ' Web Pages Crawler & ' + str(
-                                        len(self.checked_links)) + " Web Pages Found")
-                                    print('')
-                                    print(new_links[counter2])  # display the current site_link
-                                    counter2 = counter2 + 1
+                                        os.system('clear')
+                                        print(str(control) + '/' + str(len(self.checked_links)))
+                                        print('')
+                                        print(str(control) + ' Web Pages Crawler & ' + str(
+                                            len(self.checked_links)) + " Web Pages Found")
+                                        print('')
+                                        print(new_links[counter2])  # display the current site_link
+                                        counter2 = counter2 + 1
+                                    else:
+                                        counter2 = counter2 + 1
                                 else:
-                                    counter2 = counter2 + 1
+                                    # thread_name is not None:
+                                    if "#" not in new_links[counter2] and "mailto" not in new_links[counter2] and \
+                                            ".jpg"not in new_links[counter2] and \
+                                            new_links[counter2] not in self.checked_links and \
+                                            self.site_link in new_links[counter2] and \
+                                            thread_name in new_links[counter2] and \
+                                            new_links[counter2].startswith(f'{self.site_link_nos}{thread_name}'):
+
+                                        self.checked_links.append(new_links[counter2])
+
+                                        time.sleep(0.1)
+                                        os.system('clear')
+                                        # if qq is not None and int(qq) < 10:
+                                        #     qq = str(qq) + ' '
+                                        # else:
+                                        #     string = ''
+                                        print(f'thread {qq}: ' + str(control) + '/' + str(len(self.checked_links)))
+                                        print('')
+                                        print(str(control) + ' Web Pages Crawler & ' + str(
+                                            len(self.checked_links)) + " Web Pages Found")
+                                        print('')
+                                        print(new_links[counter2])  # display the current site_link
+                                        counter2 = counter2 + 1
+                                    else:
+                                        counter2 = counter2 + 1
                             else:
-                                # thread_name is not None:
-                                if "#" not in new_links[counter2] and "mailto" not in new_links[counter2] and ".jpg" \
-                                        not in new_links[counter2] and new_links[counter2] not in self.checked_links \
-                                        and self.site_link in new_links[counter2] and thread_name in \
-                                        new_links[counter2] and \
-                                        new_links[counter2].startswith(f'{self.site_link_nos}{thread_name}'):
-
-                                    self.checked_links.append(new_links[counter2])
-
-                                    os.system('clear')
-                                    print(str(control) + '/' + str(len(self.checked_links)))
-                                    print('')
-                                    print(str(control) + ' Web Pages Crawler & ' + str(
-                                        len(self.checked_links)) + " Web Pages Found")
-                                    print('')
-                                    print(new_links[counter2])  # display the current site_link
-                                    counter2 = counter2 + 1
-                                else:
-                                    counter2 = counter2 + 1
-                        else:
-                            os.system('clear')
-                            print(str(control) + '/' + str(len(self.checked_links)))
-                            print('')
-                            print(str(control) + ' Web Pages Crawler & ' + str(
-                                len(self.checked_links)) + " Web Pages Found")
-                            print('')
-                            print(self.checked_links[control])  # display the current site_link
-                            control = control + 1
+                                time.sleep(0.1)
+                                os.system('clear')
+                                # if qq is not None and int(qq) < 10:
+                                #     qq = str(qq) + ' '
+                                print(f'thread {qq}: ' + str(control) + '/' + str(len(self.checked_links)))
+                                print('')
+                                print(str(control) + ' Web Pages Crawler & ' + str(
+                                    len(self.checked_links)) + " Web Pages Found")
+                                print('')
+                                print(self.checked_links[control])  # display the current site_link
+                                control = control + 1
                 else:
                     control = control + 1
 
@@ -445,64 +638,79 @@ class Sitemap:
                                     echo=False)
             time.sleep(0.1)
 
-        # print('End links from func checked links =\n', self.checked_links, '\n')
-        # print('End links from func checked threads =\n', self.checked_threads, '\n')
-
         return self.checked_links, self.thread_folders, self.checked_threads, self.temp_func_list
 
     # ex: checked_links = [ 'https://vistgroup.ru/' ]
-    def crawling_1st_page_other_links(self, control, count_try, checked_threads, checked_links):
+    def crawling_1st_page_other_links(self, control, thread_folders, checked_threads, checked_links, qq):
         """
-        Эта функция сделана только для того чтобы обработать ссылки, которые не вошли в thread_folders
-        в дальнейшем будет доработана в функции crawling_1st_page()
-        временное решение, пока пришлось ctrl+c -> ctrl+p  x3
+        This function is for those links, which do not contains thread_folders
         """
         self.checked_threads = checked_threads
         self.checked_links = checked_links
+        self.thread_folders = thread_folders
 
         while control < len(self.checked_links):
             try:
-                dot_in_the_endlink = 'None'
-                search_links = re.search(
-                    '/[-;:+%"!@^±§& <>#_=?.a-zA-Z0-9]{2,100}[.]{1,100}[-;:+%"!@^±§& <>#_=?.a-zA-Z0-9]{2,100}$',
-                    self.checked_links[control])
-                if search_links is not None:
-                    dot_in_the_endlink = search_links.group()
-                elif not self.checked_links[control].endswith(dot_in_the_endlink) and \
+                # PROCESSING: FIND ALL LINKS LIKE /captcha2.php?captcha_sid=02529b019fa5ecfb5b45a1d38e04308e
+                # /vg-underground_C2_A0v2_C2_A0FR.png AND IGNORE THEM, ALSO IGNORE:  /*.PDF
+                dot_in_link = self.dot_in_the_endlink(counter_x=control, link_list=self.checked_links)
+
+                if not self.checked_links[control].endswith(dot_in_link) and \
                         self.checked_links[control] not in self.checked_threads:
 
-                    responses = self.request(self.checked_links[control], self.request_session())
-                    source_code = responses.text
+                    try:
+                        # setting folders number depth you want to check in links
+                        self.checked_links = self.chouse_depth(args.fdepth, self.checked_links)
 
-                    # ОБРАБОТКА: ПОИСК HREF, DATA_HREF И SRC -> ДАЛЕЕ В СПИСОК:  NEW_LINKS
-                    new_links = self.BSoup(source_code=source_code, parser="html.parser")
+                        responses = self.request(self.checked_links[control], self.request_session())
+                        source_code = responses.text
+                        status_code = responses.status_code
+                    except IndexError as err:
+                        raise UserError('Error!', err)
 
-                    counter = 0
-                    while counter < len(new_links):
-                        if "http" not in new_links[counter]:
-                            verify = new_links[counter][0]
-                            if verify == '/':
-                                new_links[counter] = new_links[counter][:1].replace('/', '') + new_links[counter][1:]
-                                new_links[counter] = self.site_link + new_links[counter]
-                                counter = counter + 1
-                            else:
-                                new_links[counter] = self.site_link + new_links[counter]
-                                counter = counter + 1
-                        else:
-                            counter = counter + 1
+                    # check status, prints status, if 400+ pass link
+                    self.status_codes_checker(code=status_code)
+                    if str(status_code).startswith('4'):
+                        control = control + 1
                     else:
-                        counter2 = 0
-                        while counter2 < len(new_links):
-                            if "#" not in new_links[counter2] and "mailto" not in new_links[counter2] and \
-                                    ".jpg" not in new_links[counter2] and new_links[counter2] not in self.checked_links \
-                                    and self.site_link in new_links[counter2]:
+                        # PROCESSING: FIND ALL HREF, DATA_HREF, SRC -> AND PUT IN LIST:  NEW_LINKS
+                        new_links = self.BSoup(source_code=source_code, parser="html.parser")
 
-                                self.checked_links.append(new_links[counter2])
-                                counter2 = counter2 + 1
+                        counter = 0
+                        while counter < len(new_links):
+                            if "http" not in new_links[counter]:
+                                verify = new_links[counter][0]
+                                if verify == '/':
+                                    new_links[counter] = new_links[counter][:1].replace('/', '') + \
+                                                         new_links[counter][1:]
+                                    new_links[counter] = self.site_link + new_links[counter]
+                                    counter = counter + 1
+                                else:
+                                    new_links[counter] = self.site_link + new_links[counter]
+                                    counter = counter + 1
                             else:
-                                counter2 = counter2 + 1
+                                counter = counter + 1
                         else:
-                            control = control + 1
+                            counter2 = 0
+                            while counter2 < len(new_links):
+                                ignore_start = 'ffs'
+                                # /company/
+                                for elsfolder in self.thread_folders:
+                                    if elsfolder in new_links[counter2]:
+                                        # 'https://vistgroup.ru/company/'
+                                        ignore_start = f'{self.site_link_nos}{elsfolder}'
+                                if "#" not in new_links[counter2] and "mailto" not in new_links[counter2] and \
+                                        ".jpg" not in new_links[counter2] and \
+                                        new_links[counter2] not in self.checked_links \
+                                        and self.site_link in new_links[counter2] and \
+                                        not new_links[counter2].startswith(ignore_start):
+
+                                    self.checked_links.append(new_links[counter2])
+                                    counter2 = counter2 + 1
+                                else:
+                                    counter2 = counter2 + 1
+                            else:
+                                control = control + 1
                 else:
                     control = control + 1
 
@@ -946,7 +1154,7 @@ if __name__ == '__main__':
         default=5,  # значение по умолчанию для глубины
         type=int,
         metavar='',  # имя аргумента в сообщении использования
-        help="search depth level, глубина рекурсии поиска ссылок",
+        help="search depth level (fo CSVCreator), глубина рекурсии поиска ссылок (для CSVCreator)",
         action="store"
     )
     arg_parser.add_argument(
@@ -956,12 +1164,24 @@ if __name__ == '__main__':
     )
     arg_parser.add_argument(
         '-w', '--workers',
-        dest="workers",  # возвращает имя аргументу через args = parse_args() -> if args.get('level'):       nargs='?',
+        dest="workers",  # возвращает имя аргументу через args = parse_args() -> if args.get()
         default=5,  # значение по умолчанию для глубины
         type=int,
         metavar='',  # имя аргумента в сообщении использования
         help="this workers = threads, the number will auto set depending on number of 1st level links, "
              "запускаем потоки исходя из количества папок первого уровня",
+        action="store"
+    )
+    arg_parser.add_argument(
+        '-fd', '--folder-depth',
+        dest="fdepth",  # возвращает имя аргументу через args = parse_args() -> if args.get()
+        default=2,  # значение по умолчанию для глубины
+        type=int,
+        metavar='',  # имя аргумента в сообщении использования
+        help="THE MOST USEFUL ARGUMENT, default set -fd 2, if you try to make sitemap and graph map for yandex.ru "
+             "or google.com it will stops on /news/ folder and all will be good. Else if you set -fd 4 for yandex.ru "
+             "it wil find links over 50 000+ in /news/ folder and probably you get request exception or any bug "
+             "that I do not explore yet, глубина поиска папок на сайте ",
         action="store"
     )
 
@@ -973,8 +1193,9 @@ if __name__ == '__main__':
     # size = '8,5'  # Size of rendered graph
     # output_format = 'pdf'  # Format of rendered image - pdf,png,tiff
     # skip = ''  # List of branches to restrict from expanding
-    arg_parser.add_argument('-d', '--depth', dest="depth", type=int, default=5,
-                            help='number of layers deep to plot categorization, количество слоев', metavar='')
+    arg_parser.add_argument('-d', '--depth', dest="depth", type=int, default=5, metavar='',
+                            help='number of layers deep to plot categorization (for VisualSitemapView), '
+                                 'количество слоев (для VisualSitemapView)')
     arg_parser.add_argument('--limit', dest="limit", type=int, default=50,
                             help='maximum number of nodes for a branch', metavar='')
     arg_parser.add_argument('--title', dest="title", type=str, default='',
@@ -1007,15 +1228,22 @@ if __name__ == '__main__':
     else:
         try:
             r = requests.get(f'https://{args.domain}/')
-            if r.status_code == 200:
-                print('stastus_code = 200 all is ok')
+            _code = r.status_code
+
+            if _code == 200:
+                print('Status_code = 200 all is ok')
             else:
-                print(r.status_code)
+                Sitemap().status_codes_checker(code=_code)
+                print('Wrong Domain or need authorization')
+
         except BaseException as err:
             raise UserError('Error!', err)
+
         finally:
             r = requests.get(f'https://{args.domain}/')
-            if r.status_code != 200:
+            _code = r.status_code
+            if _code != 200:
+                Sitemap().status_codes_checker(code=_code)
                 print('DOMAIN WRONG, TRY READ: --help info')
                 print('OR YOU CANT MAKE MACHINE REQUESTS ON THIS DOMAIN')
                 print('THIS FUNCTION IS NOT UP YET')
