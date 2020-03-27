@@ -159,7 +159,7 @@ class Sitemap:
         self.checked_links_almost = []                  # intermediate list
         self.checked_links_end = []                     # the final list of all checked_links from each thread
         self.checked_threads = []                           # not used list
-        # self.temp_func_list = []                        # intermediate list
+        self.temp_func_list = []                        # intermediate list
 
     def status_codes_checker(self, code):
         """
@@ -402,15 +402,15 @@ class Sitemap:
                     not links.endswith(dot_in_link):
                 self.checked_links_end.append(links)
 
-        # with open(f'{home}/Sitemaps/{args.domain}/extra_thread.txt', 'r') as f:
-        #     b = f.read()
-        #     self.temp_func_list = b.split('\n')
-        # for linkss in self.temp_func_list:
-        #     if linkss is not None and linkss != '' and linkss not in self.checked_links_end:
-        #         self.checked_links_end.append(linkss)
+        with open(f'{home}/Sitemaps/{args.domain}/extra_thread.txt', 'r') as f:
+            b = f.read()
+            self.temp_func_list = b.split('\n')
+        for linkss in self.temp_func_list:
+            if linkss is not None and linkss != '' and linkss not in self.checked_links_end:
+                self.checked_links_end.append(linkss)
         # remove temp .txt files
         run_command(f'rm {home}/Sitemaps/{args.domain}/links_from_thread.txt')
-        # run_command(f'rm {home}/Sitemaps/{args.domain}/extra_thread.txt')
+        run_command(f'rm {home}/Sitemaps/{args.domain}/extra_thread.txt')
 
     def start_crawling(self):
         """
