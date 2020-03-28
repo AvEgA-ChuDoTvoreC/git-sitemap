@@ -2,8 +2,8 @@
 
 This project should help you with smth!
 
-Some bugs fixed, almost stable version, sites for example: neurobotics.ru, crawler-test.com, yandex.ru
-=====================================================================================================
+Stable version. Sites for example: neurobotics.ru, crawler-test.com, yandex.ru
+==============================================================================
 
 Test commands. Try this:
 
