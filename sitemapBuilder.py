@@ -49,82 +49,82 @@ Code statistic from log analyzer: Webalizer
 check https://ru.wikipedia.org/wiki/Список_кодов_состояния_HTTP"""
 
 stat_code_dict = {
-    '100': 'Continue («продолжай»)[2][3];',
-    '101': 'Switching Protocols («переключение протоколов»)[2][3];',
+    '100': 'Continue («продолжай»)[2][3]:',
+    '101': 'Switching Protocols («переключение протоколов»)[2][3]:',
     '102': 'Processing («идёт обработка»).',
 
-    '200': 'OK («хорошо»)[2][3];',
-    '201': 'Created («создано»)[2][3][4];',
-    '202': 'Accepted («принято»)[2][3];',
-    '203': 'Non-Authoritative Information («информация не авторитетна»)[2][3];',
-    '204': 'No Content («нет содержимого»)[2][3];',
-    '205': 'Reset Content («сбросить содержимое»)[2][3];',
-    '206': 'Partial Content («частичное содержимое»)[2][3];',
-    '207': 'Multi-Status («многостатусный»)[5];',
-    '208': 'Already Reported («уже сообщалось»)[6];',
+    '200': 'OK («хорошо»)[2][3]:',
+    '201': 'Created («создано»)[2][3][4]:',
+    '202': 'Accepted («принято»)[2][3]:',
+    '203': 'Non-Authoritative Information («информация не авторитетна»)[2][3]:',
+    '204': 'No Content («нет содержимого»)[2][3]:',
+    '205': 'Reset Content («сбросить содержимое»)[2][3]:',
+    '206': 'Partial Content («частичное содержимое»)[2][3]:',
+    '207': 'Multi-Status («многостатусный»)[5]:',
+    '208': 'Already Reported («уже сообщалось»)[6]:',
     '226': 'IM Used («использовано IM»).',
 
-    '300': 'Multiple Choices («множество выборов»)[2][7];',
-    '301': 'Moved Permanently («перемещено навсегда»)[2][7];',
-    '302': 'Moved Temporarily («перемещено временно»)[2][7];',
-    # '302': 'Found («найдено»)[7];',
-    '303': 'See Other («смотреть другое»)[2][7];',
-    '304': 'Not Modified («не изменялось»)[2][7];',
-    '305': 'Use Proxy («использовать прокси»)[2][7];',
-    '306': '— зарезервировано (код использовался только в ранних спецификациях)[7];',
-    '307': 'Temporary Redirect («временное перенаправление»)[7];',
+    '300': 'Multiple Choices («множество выборов»)[2][7]:',
+    '301': 'Moved Permanently («перемещено навсегда»)[2][7]:',
+    '302': 'Moved Temporarily («перемещено временно»)[2][7]:',
+    # '302': 'Found («найдено»)[7]:',
+    '303': 'See Other («смотреть другое»)[2][7]:',
+    '304': 'Not Modified («не изменялось»)[2][7]:',
+    '305': 'Use Proxy («использовать прокси»)[2][7]:',
+    '306': '— зарезервировано (код использовался только в ранних спецификациях)[7]:',
+    '307': 'Temporary Redirect («временное перенаправление»)[7]:',
     '308': 'Permanent Redirect («постоянное перенаправление»)[8].',
 
-    '400': 'Bad Request («плохой, неверный запрос»)[2][3][4];',
-    '401': 'Unauthorized («не авторизован (не представился)»)[2][3];',
-    '402': 'Payment Required («необходима оплата»)[2][3];',
-    '403': 'Forbidden («запрещено (не уполномочен)»)[2][3];',
-    '404': 'Not Found («не найдено»)[2][3];',
-    '405': 'Method Not Allowed («метод не поддерживается»)[2][3];',
-    '406': 'Not Acceptable («неприемлемо»)[2][3];',
-    '407': 'Proxy Authentication Required («необходима аутентификация прокси»)[2][3];',
-    '408': 'Request Timeout («истекло время ожидания»)[2][3];',
-    '409': 'Conflict («конфликт»)[2][3][4];',
-    '410': 'Gone («удалён»)[2][3];',
-    '411': 'Length Required («необходима длина»)[2][3];',
-    '412': 'Precondition Failed («условие ложно»)[2][3][9];',
-    '413': 'Payload Too Large («полезная нагрузка слишком велика»)[2][3];',
-    '414': 'URI Too Long («URI слишком длинный»)[2][3];',
-    '415': 'Unsupported Media Type («неподдерживаемый тип данных»)[2][3];',
-    '416': 'Range Not Satisfiable («диапазон не достижим»)[3];',
-    '417': 'Expectation Failed («ожидание не удалось»)[3];',
-    '418': 'I’m a teapot («я — чайник»);',
-    '419': 'Authentication Timeout (not in RFC 2616) («обычно ошибка проверки CSRF»);',
-    '421': 'Misdirected Request [10];',
-    '422': 'Unprocessable Entity («необрабатываемый экземпляр»);',
-    '423': 'Locked («заблокировано»);',
-    '424': 'Failed Dependency («невыполненная зависимость»);',
-    '426': 'Upgrade Required («необходимо обновление»);',
-    '428': 'Precondition Required («необходимо предусловие»)[11];',
-    '429': 'Too Many Requests («слишком много запросов»)[11];',
-    '431': 'Request Header Fields Too Large («поля заголовка запроса слишком большие»)[11];',
-    '449': 'Retry With («повторить с»)[1];',
+    '400': 'Bad Request («плохой, неверный запрос»)[2][3][4]:',
+    '401': 'Unauthorized («не авторизован (не представился)»)[2][3]:',
+    '402': 'Payment Required («необходима оплата»)[2][3]:',
+    '403': 'Forbidden («запрещено (не уполномочен)»)[2][3]:',
+    '404': 'Not Found («не найдено»)[2][3]:',
+    '405': 'Method Not Allowed («метод не поддерживается»)[2][3]:',
+    '406': 'Not Acceptable («неприемлемо»)[2][3]:',
+    '407': 'Proxy Authentication Required («необходима аутентификация прокси»)[2][3]:',
+    '408': 'Request Timeout («истекло время ожидания»)[2][3]:',
+    '409': 'Conflict («конфликт»)[2][3][4]:',
+    '410': 'Gone («удалён»)[2][3]:',
+    '411': 'Length Required («необходима длина»)[2][3]:',
+    '412': 'Precondition Failed («условие ложно»)[2][3][9]:',
+    '413': 'Payload Too Large («полезная нагрузка слишком велика»)[2][3]:',
+    '414': 'URI Too Long («URI слишком длинный»)[2][3]:',
+    '415': 'Unsupported Media Type («неподдерживаемый тип данных»)[2][3]:',
+    '416': 'Range Not Satisfiable («диапазон не достижим»)[3]:',
+    '417': 'Expectation Failed («ожидание не удалось»)[3]:',
+    '418': 'I’m a teapot («я — чайник»):',
+    '419': 'Authentication Timeout (not in RFC 2616) («обычно ошибка проверки CSRF»):',
+    '421': 'Misdirected Request [10]:',
+    '422': 'Unprocessable Entity («необрабатываемый экземпляр»):',
+    '423': 'Locked («заблокировано»):',
+    '424': 'Failed Dependency («невыполненная зависимость»):',
+    '426': 'Upgrade Required («необходимо обновление»):',
+    '428': 'Precondition Required («необходимо предусловие»)[11]:',
+    '429': 'Too Many Requests («слишком много запросов»)[11]:',
+    '431': 'Request Header Fields Too Large («поля заголовка запроса слишком большие»)[11]:',
+    '449': 'Retry With («повторить с»)[1]:',
     '451': 'Unavailable For Legal Reasons («недоступно по юридическим причинам»)[12].',
-    '499': 'Client Closed Request (клиент закрыл соединение);',
+    '499': 'Client Closed Request (клиент закрыл соединение):',
 
-    '500': 'Internal Server Error («внутренняя ошибка сервера»)[2][3];',
-    '501': 'Not Implemented («не реализовано»)[2][3];',
-    '502': 'Bad Gateway («плохой, ошибочный шлюз»)[2][3];',
-    '503': 'Service Unavailable («сервис недоступен»)[2][3];',
-    '504': 'Gateway Timeout («шлюз не отвечает»)[2][3];',
-    '505': 'HTTP Version Not Supported («версия HTTP не поддерживается»)[2][3];',
-    '506': 'Variant Also Negotiates («вариант тоже проводит согласование»)[13];',
-    '507': 'Insufficient Storage («переполнение хранилища»);',
-    '508': 'Loop Detected («обнаружено бесконечное перенаправление»)[14];',
-    '509': 'Bandwidth Limit Exceeded («исчерпана пропускная ширина канала»);',
-    '510': 'Not Extended («не расширено»);',
-    '511': 'Network Authentication Required («требуется сетевая аутентификация»)[11];',
-    '520': 'Unknown Error («неизвестная ошибка»)[15];',
-    '521': 'Web Server Is Down («веб-сервер не работает»)[15];',
-    '522': 'Connection Timed Out («соединение не отвечает»)[15];',
-    '523': 'Origin Is Unreachable («источник недоступен»)[15];',
-    '524': 'A Timeout Occurred («время ожидания истекло»)[15];',
-    '525': 'SSL Handshake Failed («квитирование SSL не удалось»)[15];',
+    '500': 'Internal Server Error («внутренняя ошибка сервера»)[2][3]:',
+    '501': 'Not Implemented («не реализовано»)[2][3]:',
+    '502': 'Bad Gateway («плохой, ошибочный шлюз»)[2][3]:',
+    '503': 'Service Unavailable («сервис недоступен»)[2][3]:',
+    '504': 'Gateway Timeout («шлюз не отвечает»)[2][3]:',
+    '505': 'HTTP Version Not Supported («версия HTTP не поддерживается»)[2][3]:',
+    '506': 'Variant Also Negotiates («вариант тоже проводит согласование»)[13]:',
+    '507': 'Insufficient Storage («переполнение хранилища»):',
+    '508': 'Loop Detected («обнаружено бесконечное перенаправление»)[14]:',
+    '509': 'Bandwidth Limit Exceeded («исчерпана пропускная ширина канала»):',
+    '510': 'Not Extended («не расширено»):',
+    '511': 'Network Authentication Required («требуется сетевая аутентификация»)[11]:',
+    '520': 'Unknown Error («неизвестная ошибка»)[15]:',
+    '521': 'Web Server Is Down («веб-сервер не работает»)[15]:',
+    '522': 'Connection Timed Out («соединение не отвечает»)[15]:',
+    '523': 'Origin Is Unreachable («источник недоступен»)[15]:',
+    '524': 'A Timeout Occurred («время ожидания истекло»)[15]:',
+    '525': 'SSL Handshake Failed («квитирование SSL не удалось»)[15]:',
     '526': 'Invalid SSL Certificate («недействительный сертификат SSL»)[15].'
 }
 
@@ -150,8 +150,8 @@ class Sitemap:
         super(Sitemap, self).__init__()
         self.checked_links = list()                     # the final links list of each thread work
         self.new_links = list()                         # list with new links that appends to checked_links
-        self.site_link = f'https://{args.domain}/'
-        self.site_link_nos = f'https://{args.domain}'
+        self.site_link = f'{protocol}{args.domain}/'
+        self.site_link_nos = f'{protocol}{args.domain}'
         self.workers_count = args.workers               # number of threads: depends on number of 1st level folders
         self.thread_folders = list()                      # 1st level links that we need for threads to run on
         self.thread_name = ''                           # name of the link from thread_folders
@@ -161,24 +161,24 @@ class Sitemap:
         self.checked_threads = []                           # not used list
         self.temp_func_list = []                        # intermediate list
 
-    def status_codes_checker(self, code):
+    def status_codes_checker(self, code, current_link):
         """
         Check the response status code match with stat_code_dict and print message
             for ex: 401 Unauthorized
         """
         code = str(code)
         if code.startswith('1'):
-            print(code + ' ' + stat_code_dict[code])
+            print(code + ' ' + stat_code_dict[code] + f'  {current_link}')
         elif code.startswith('2'):
-            print(code + ' ' + stat_code_dict[code])
+            print(code + ' ' + stat_code_dict[code] + f'  {current_link}')
         elif code.startswith('3'):
-            print(code + ' ' + stat_code_dict[code])
+            print(code + ' ' + stat_code_dict[code] + f'  {current_link}')
         elif code.startswith('4'):
-            print(code + ' ' + stat_code_dict[code])
+            print(code + ' ' + stat_code_dict[code] + f'  {current_link}')
         elif code.startswith('5'):
-            print(code + ' ' + stat_code_dict[code])
+            print(code + ' ' + stat_code_dict[code] + f'  {current_link}')
 
-        # return code
+        return code
 
     def chouse_filter(self, filter):
         """This function will filter links.
@@ -195,7 +195,14 @@ class Sitemap:
             pass
 
     def chouse_depth(self, fdepth, link_list):
-        """Folders number depth you want to check in links"""
+        """
+        Folders number depth you want to check in links
+
+        :param fdepth:
+        :param link_list:
+        :return: fdepth_list: changes self.checked_links with applying filter
+        """
+        # set default 1 or 10
         if type(fdepth) is not int or fdepth < 1:
             fdepth = 1
             print('Wrong folders depth. Setting: -fd 1')
@@ -213,14 +220,12 @@ class Sitemap:
             for i in range(len(folder)):
                 if i <= fdepth - 1:
                     aa = aa + f'{folder[i]}/'
-            # print('aa=', aa)
-            if aa is not "/" and "mailto" not in aa and "#" not in aa and "tel" not in aa and aa not in fdepth_list and \
-                    " " not in aa and "?" not in aa and ":" not in aa and not aa.endswith('dot'):
-                fdepth_list.append(aa)
-            #     print('appended aa=', aa)
-            # print('folder=', folder)
 
-        # print(fdepth_list)
+            # here we can put any filter for folder names
+            if aa is not "/" and "mailto" not in aa and "#" not in aa and "tel" not in aa and aa not in fdepth_list \
+                    and " " not in aa and "?" not in aa and ":" not in aa and not aa.endswith('xxxxxxx'):
+                fdepth_list.append(aa)
+        # add https:// to make relative links absolute
         cc = 0
         while cc < len(fdepth_list):
             for i in fdepth_list:
@@ -235,7 +240,7 @@ class Sitemap:
 
         есть особенность пока мне не понятная, при использовании session.post:
         количество ссылок на том же сайте сокращается и процесс переходов проходит
-        в разы быстрее чем при использовании прямых request запросов с 520+ до 270+
+        в разы быстрее, чем при использовании прямых request запросов с 520+ до 270+
         и вместо получасовой обработки 3 минутная, и как + при этом не теряется возможность
         передавать данные юзерагента и соответсвенно возможность обхода антибот систем на сайте
         (данная функция будет реализована позже)
@@ -256,7 +261,7 @@ class Sitemap:
         :param session:
         :return: req.text
         """
-        req = session.post('https://' + f'{args.domain}')
+        req = session.post(f'{protocol}' + f'{args.domain}')
         time.sleep(2)
 
         return req.text
@@ -310,6 +315,18 @@ class Sitemap:
         pass
 
     def dot_in_the_endlink(self, counter_x=None, link_list=None, link=None):
+        """
+        Find all links like:
+            /captcha2.php?captcha_sid=02529b019fa5ecfb5b45a1d38e04308e
+            /vg-underground_C2_A0v2_C2_A0FR.png
+        and ignore them, also ignore:
+            /*.PDF ,...
+
+        :param counter_x:
+        :param link_list:
+        :param link:
+        :return: dot_in_the_endlink
+        """
         dot_in_the_endlink = 'None'
         if link is None:
             search_links = re.search(
@@ -364,7 +381,7 @@ class Sitemap:
 
         # the way I found to put extra thread worker.
         # in development: further args for func() that'll get links from robots.txt
-        self.thread_folders.append(f'https://{args.domain}/robot.txt')
+        self.thread_folders.append(f'{protocol}{args.domain}/robot.txt')
 
         # here we can put code to increase number of workers from args.worker
         self.workers_count = len(self.thread_folders)
@@ -418,11 +435,11 @@ class Sitemap:
 
         :return: self.checked_links, self.thread_folders, self.checked_threads
         """
-        print('https://' + f'{args.domain}')
+        print(f'{protocol}' + f'{args.domain}')
         print('Crawling...')
-        time.sleep(3)
-        self.checked_links.append(f'https://{args.domain}/')
-        print('len = ', len(self.checked_links))
+        time.sleep(4)
+        self.checked_links.append(f'{protocol}{args.domain}/')
+        # print('len = ', len(self.checked_links))
 
         # crawl 1st page to find folders and then append em to thread_folders list
         self.crawling_web_pages(control=0, count_try=0, thread_folders=[], checked_links=self.checked_links)
@@ -499,8 +516,8 @@ class Sitemap:
                         source_code = responses.text
                         status_code = responses.status_code
 
-                    # check status, prints status, if 400+ pass
-                    self.status_codes_checker(code=status_code)
+                    # check status, prints status and current link, if 400+ pass
+                    self.status_codes_checker(code=status_code, current_link=self.checked_links[control])
                     if str(status_code).startswith('4'):
                         control = control + 1
                     else:
@@ -653,8 +670,8 @@ class Sitemap:
                     except IndexError as err:
                         raise UserError('Error!', err)
 
-                    # check status, prints status, if 400+ pass link
-                    self.status_codes_checker(code=status_code)
+                    # check status, prints status and current link, if 400+ pass
+                    self.status_codes_checker(code=status_code, current_link=self.checked_links[control])
                     if str(status_code).startswith('4'):
                         control = control + 1
                     else:
@@ -779,7 +796,7 @@ class Sitemap:
 
         countt = 0
         for link in self.checked_links_end:
-            new_link = link.replace('https://', '/').strip('\n')
+            new_link = link.replace(f'{protocol}', '/').strip('\n')
 
             if new_link.startswith('/') and new_link.endswith('/'):
                 run_command(f'mkdir {cmd} ' + f'~/Sitemaps{new_link}', echo=False)
@@ -1100,6 +1117,7 @@ if __name__ == '__main__':
     arg_parser = argparse.ArgumentParser(
         prog='sitemapBuilder',
         usage='%(prog)s [domain] -l [level] -d [depth]      type -h, --help for more info\n'
+              '\n'
               '>>> sitemapBuilder.py examplesite.com\n'
               '\n'
               'check that sitemapBuilder.py is in your Home directory\n'
@@ -1196,8 +1214,20 @@ if __name__ == '__main__':
 
     # get home dir link: home = /Users/box$
     run_command('cd ~/')
-    oo1 = run_command('pwd')
-    home = oo1[1].strip('\n')
+    cmd_text = run_command('pwd')
+    home = cmd_text[1].strip('\n')
+
+    # set protocol
+    if args.domain.startswith('http://'):
+        protocol = 'http://'
+        args.domain = args.domain.replace(protocol, '')
+    elif args.domain.startswith('https://'):
+        protocol = 'https://'
+        args.domain = args.domain.replace(protocol, '')
+    else:
+        protocol = 'https://'
+    print(f'Setting protocol: "{protocol}"')
+    print(f'domain = {args.domain}')
 
     wrong = re.search(
                     '/[-;:+%"!@^±§& <>#_=?.a-zA-Z0-9]{2,100}[.]{1,100}[-;:+%"!@^±§& <>#_=?.a-zA-Z0-9]{2,100}$',
@@ -1205,27 +1235,27 @@ if __name__ == '__main__':
     w2 = args.domain
     if '/' in w2 or ',' in w2 or 'http' in w2 or 'https' in w2 or wrong is not None:
         print('Something Wrong with Domain')
-        print('Please Type:  sitemapBuilder.py --help   or correct domain')
-
+        print('Please Type:  sitemapBuilder.py --help')
+        print('Or use Correct   Domain / Protocol')
     else:
         try:
-            r = requests.get(f'https://{args.domain}/')
+            r = requests.get(f'{protocol}{args.domain}/')
             _code = r.status_code
 
             if _code == 200:
                 print('Status_code = 200 all is ok')
             else:
-                Sitemap().status_codes_checker(code=_code)
-                print('Wrong Domain or need authorization')
+                Sitemap().status_codes_checker(code=_code, current_link='')
+                print('Wrong Domain or need Authorization')
 
         except BaseException as err:
             raise UserError('Error!', err)
 
         finally:
-            r = requests.get(f'https://{args.domain}/')
+            r = requests.get(f'{protocol}{args.domain}/')
             _code = r.status_code
             if _code != 200:
-                Sitemap().status_codes_checker(code=_code)
+                Sitemap().status_codes_checker(code=_code, current_link='')
                 print('DOMAIN WRONG, TRY READ: --help info')
                 print('OR YOU CANT MAKE MACHINE REQUESTS ON THIS DOMAIN')
                 print('THIS FUNCTION IS NOT UP YET')
