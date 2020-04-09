@@ -975,7 +975,8 @@ class VisualSitemapView:
                         f.node(name=f'{connect_to}-{name}', label=name)
                         f.edge(connect_to, f'{connect_to}-{name}', label='{:,}'.format(val))
 
-        f.attr('node', shape='rectangle')  # Plot nodes as rectangles
+        f.attr('node', shape='component', fillcolor='gold', fontsize='20')  # Plot nodes as rectangles / components ..
+        # http://www.graphviz.org/doc/info/shapes.html#polygon
 
         # Add the first layer of nodes
         for name, counts in sitemap_layers.groupby(['0'])['counts'].sum().reset_index().sort_values(['counts'],
@@ -985,7 +986,7 @@ class VisualSitemapView:
         if layers == 0:
             return f
 
-        f.attr('node', shape='oval')  # Plot nodes as ovals
+        f.attr('node', shape='oval', fillcolor='#dbdddd')  # Plot nodes as ovals / folders ..
         f.graph_attr.update()
 
         # Loop over each layer adding nodes and edges to prior nodes
@@ -1160,7 +1161,7 @@ if __name__ == '__main__':
     arg_parser.add_argument(
         '-v', '--version',
         action='version',
-        version='%(prog)s 1.0'
+        version='%(prog)s v1.1'
     )
     arg_parser.add_argument(
         '-w', '--workers',
